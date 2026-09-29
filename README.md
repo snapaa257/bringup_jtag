@@ -10,8 +10,10 @@ Motive of test is to hand-clock the TAP, and read the IDCODE back to verify a su
 
 ## Installation
 As time of this testing done, Ubuntu used.
-**Prerequisity**: Icarus Verilog
-    $ sudo apt install iverilog
+1. **Prerequisity**: Icarus Verilog
+   ```bash
+    sudo apt install iverilog
+   ```
 
 ## Usage examples
 A small note on the two test options here.
@@ -29,4 +31,4 @@ Runs a test on the VexRiscv generated with GenSmallAndProductiveWithOfficialDebu
     ```
 
 ## Addition
-**[Optional]** To regenerate the VexRiscv core. Github repository: <working on it>
+**[Optional]** To regenerate the VexRiscv core. Github repository: {working on it}
