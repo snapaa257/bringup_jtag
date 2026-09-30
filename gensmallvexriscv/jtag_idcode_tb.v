@@ -19,20 +19,22 @@ module jtag_idcode_tb;
   reg clk = 0, reset = 1, debugReset = 1;
   wire ndmreset, stoptime;
 
- // Core bus + irq, tie up since to going to be used here currently
-  wire dBus_cmd_valid, dBus_cmd_payload_wr, dBus_cmd_payload_uncached;
-  wire [31:0] dBus_cmd_payload_address, dBus_cmd_payload_data;
-  wire [3:0]  dBus_cmd_payload_mask;
-  wire [1:0]  dBus_cmd_payload_size;
-  wire dBus_cmd_payload_last;
-  wire iBus_cmd_valid; wire [31:0] iBus_cmd_payload_address; wire [2:0] iBus_cmd_payload_size;
+ // Wishbone bus + irq, tie up since to going to be used here currently
+  wire iBusWishbone_CYC, iBusWishbone_STB, iBusWishbone_WE;
+  wire [29:0] iBusWishbone_ADR;
+  wire [31:0] iBusWishbone_DAT_MOSI;
+  wire [3:0] iBusWishbone_SEL;
+  wire [2:0] iBusWishbone_CTI;
+  wire [1:0] iBusWishbone_BTE;
+
+  wire dBusWishbone_CYC, dBusWishbone_STB, dBusWishbone_WE;
+  wire [29:0] dBusWishbone_ADR;
+  wire [31:0] dBusWishbone_DAT_MOSI;
+  wire [3:0] dBusWishbone_SEL;
+  wire [2:0] dBusWishbone_CTI;
+  wire [1:0] dBusWishbone_BTE;
 
   VexRiscv dut (
-    .dBus_cmd_valid(dBus_cmd_valid), .dBus_cmd_ready(1'b1),
-    .dBus_cmd_payload_wr(dBus_cmd_payload_wr),
-    .dBus_cmd_payload_address(dBus_cmd_payload_address), .dBus_cmd_payload_data(dBus_cmd_payload_data),
-    .dBus_cmd_payload_mask(dBus_cmd_payload_mask), .dBus_cmd_payload_size(dBus_cmd_payload_size),
-
     .timerInterrupt(1'b0), .externalInterrupt(1'b0), .softwareInterrupt(1'b0),
 
      // JTAG
@@ -43,10 +45,14 @@ module jtag_idcode_tb;
 
     .ndmreset(ndmreset),
 
-    .iBus_cmd_valid(iBus_cmd_valid), .iBus_cmd_ready(1'b1),
-    
-    .iBus_rsp_valid(1'b0), .iBus_rsp_payload_error(1'b0),
-
+     // Ibus
+    .iBusWishbone_CYC(iBusWishbone_CYC), .iBusWishbone_STB(iBusWishbone_STB), .iBusWishbone_ACK(1'b0), .iBusWishbone_WE(iBusWishbone_WE), .iBusWishbone_ADR(iBusWishbone_ADR),
+    .iBusWishbone_DAT_MISO(32'b0), .iBusWishbone_DAT_MOSI(iBusWishbone_DAT_MOSI), .iBusWishbone_SEL(iBusWishbone_SEL), .iBusWishbone_ERR(1'b0), .iBusWishbone_CTI(iBusWishbone_CTI), .iBusWishbone_BTE(iBusWishbone_BTE),
+ 
+    // dBus
+    .dBusWishbone_CYC(dBusWishbone_CYC), .dBusWishbone_STB(dBusWishbone_STB), .dBusWishbone_ACK(1'b0), .dBusWishbone_WE(dBusWishbone_WE), .dBusWishbone_ADR(dBusWishbone_ADR),
+    .dBusWishbone_DAT_MISO(32'b0), .dBusWishbone_DAT_MOSI(dBusWishbone_DAT_MOSI), .dBusWishbone_SEL(dBusWishbone_SEL), .dBusWishbone_ERR(1'b0), .dBusWishbone_CTI(dBusWishbone_CTI), .dBusWishbone_BTE(dBusWishbone_BTE), 
+  
     .reset(reset), .stoptime(stoptime), .clk(clk), .debugReset(debugReset)
   );
 
